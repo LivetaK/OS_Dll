@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Dll.h"
-#include <stdlib.h>
+
+
 
 //DLL_API void NumberList()
 //{
@@ -129,10 +130,10 @@ DLL_API void tCubic(double F, double x0, double xn, double xl, vector<string>& p
 
     int currentFile = 0;
     for (double x = x0; x <= xn; x += xl) {
-        double fun = x * x * x + 3 * x * x - F;
+        double funY = x * x * x + 3 * x * x - F;
 
-        if (fun >= 0) {
-            double y = sqrt(fun);
+        if (funY >= 0) {
+            double y = sqrt(funY);
             fileStreams[currentFile] << "X: " << x << ", Y: " << y << endl;
             fileStreams[currentFile] << "X: " << x << ", Y: " << -y << endl << endl;
 
@@ -145,5 +146,52 @@ DLL_API void tCubic(double F, double x0, double xn, double xl, vector<string>& p
 
     for (auto& file : fileStreams) {
         file.close();
+    }
+}
+
+DLL_API void merge(double F, vector<string>& paths) {
+    struct Point {
+        double x, y;
+        bool operator<(const Point& other) const { return x < other.x; }
+    };
+
+    vector<Point> allPoints;
+
+    for (const auto& folderPath : paths) {
+        string filePath = folderPath + "\\data.txt";
+        ifstream file(filePath);
+
+        if (file.is_open()) {
+            string line;
+            while (getline(file, line)) {
+                    Point point;
+                    char Char;
+                    istringstream iss(line);
+                    iss >> Char >> Char >> point.x >> Char >> Char >> Char >> point.y;
+                    allPoints.push_back(point);
+                
+            }
+            file.close();
+
+            remove(filePath.c_str());
+        }
+    }
+    std::sort(std::execution::par, allPoints.begin(), allPoints.end(),
+        [](const Point& a, const Point& b) { return a.x < b.x; });
+
+    string outputFileName = "sulieti_pagal_F_" + to_string(F) + ".txt";
+    ofstream outputFile(outputFileName);
+
+    for (const auto& point : allPoints) {
+        outputFile << "X: " << point.x << ", Y: " << point.y << endl;
+    }
+
+    cout << "Sulieti duomenys irasyti i: " << outputFileName << endl;
+}
+
+DLL_API void deleteFolders(vector<string>& paths) {
+    for (const auto& folderPath : paths) {
+        string command = "rmdir /s /q " + folderPath;
+        system(command.c_str());
     }
 }
