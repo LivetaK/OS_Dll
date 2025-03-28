@@ -69,6 +69,43 @@ DLL_API int controlPanelMenu() {
 }
 
 
-DLL_API void folders() {
-    
+DLL_API void folders(vector<string>& paths) {
+    string name = "Liveta", surname = "Kavaliauskaite";
+    string command = "mkdir " + surname;
+	paths.push_back(surname);
+    system(command.c_str());
+    for (int i = 1; i <= 3; i++) {
+		string path = surname + "\\" + name + to_string(i);
+        command = "mkdir " + path;
+        paths.push_back(path);
+        system(command.c_str());
+
+        for (int j = 1; j <= 3; j++) {
+            path = surname + "\\" + name + to_string(i) + "\\" +
+                name + to_string(i) + name + to_string(j);
+            paths.push_back(path);
+            command = "mkdir " + path;
+            system(command.c_str());
+        }
+    }
+}
+
+DLL_API void txtFiles(vector<string>& paths) {
+    for (const auto& folderPath : paths) {
+        string filePath = folderPath + "\\data.txt";
+
+        ifstream test(filePath);
+        if (!test) {
+            ofstream file(filePath);
+            if (!file) {
+                cerr << "Klaida kuriant: " << filePath << endl;
+                continue;
+            }
+            cout << "Sukurtas: " << filePath << endl;
+        }
+        else {
+            test.close();
+            cout << "Failas jau egzistuoja: " << filePath << endl;
+        }
+    }
 }

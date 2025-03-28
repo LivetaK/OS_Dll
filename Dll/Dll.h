@@ -8,7 +8,8 @@
 #include <ctime>
 #include <chrono>
 #include <string>
-
+#include <vector>
+#include <fstream>
 
 using namespace std::chrono;
 
@@ -25,6 +26,11 @@ using std::wcout;
 using std::wstring;
 using std::cin;
 using std::string;
+using std::to_string;
+using std::vector;
+using std::ifstream;
+using std::ofstream;
+using std::cerr;
 
 //extern "C"
 //DLL_API void NumberList();
@@ -38,7 +44,10 @@ DLL_API void controlPanel(int choice);
 extern "C"
 DLL_API int controlPanelMenu();
 
+extern "C"
+DLL_API void folders(vector<string> &paths);
 
-
+extern "C"
+DLL_API void txtFiles(vector<string>& paths);
 
 #endif
