@@ -16,8 +16,7 @@ int main() {
     //} while (true);
 	
 	vector<string> paths;
-    folders(paths);
-	txtFiles(paths);
 
+    tCubic(10.0, -50.0, 50.0, 0.5, paths);
     return 0;
 }

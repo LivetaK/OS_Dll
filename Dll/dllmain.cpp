@@ -91,6 +91,7 @@ DLL_API void folders(vector<string>& paths) {
 }
 
 DLL_API void txtFiles(vector<string>& paths) {
+
     for (const auto& folderPath : paths) {
         string filePath = folderPath + "\\data.txt";
 
@@ -107,5 +108,42 @@ DLL_API void txtFiles(vector<string>& paths) {
             test.close();
             cout << "Failas jau egzistuoja: " << filePath << endl;
         }
+    }
+}
+
+
+
+DLL_API void tCubic(double F, double x0, double xn, double xl, vector<string>& paths) {
+	folders(paths);
+    txtFiles(paths);
+
+    vector<ofstream> fileStreams;
+    for (const auto& folderPath : paths) {
+        string filePath = folderPath + "\\data.txt";
+        fileStreams.emplace_back(filePath, std::ios::app);
+        if (!fileStreams.back()) {
+            cerr << "Nepavyko atidaryti: " << filePath << endl;
+            fileStreams.pop_back();
+        }
+    }
+
+    int currentFile = 0;
+    for (double x = x0; x <= xn; x += xl) {
+        double fun = x * x * x + 3 * x * x - F;
+
+        if (fun >= 0) {
+            double y = sqrt(fun);
+            fileStreams[currentFile] << "X: " << x << ", Y: " << y << endl;
+            fileStreams[currentFile] << "X: " << x << ", Y: " << -y << endl << endl;
+
+            currentFile = (currentFile + 1) % fileStreams.size();
+        }
+        else {
+            cout << "Bandoma traukti sakni is neigiamo skaiciaus.\n";
+        }
+    }
+
+    for (auto& file : fileStreams) {
+        file.close();
     }
 }

@@ -10,9 +10,11 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <filesystem>
+
 
 using namespace std::chrono;
-
+extern std::vector<std::ofstream> fileStreams;
 
 #ifdef DLL_EXPORTS
 #define DLL_API __declspec(dllexport)
@@ -31,7 +33,6 @@ using std::vector;
 using std::ifstream;
 using std::ofstream;
 using std::cerr;
-
 //extern "C"
 //DLL_API void NumberList();
 
@@ -50,4 +51,6 @@ DLL_API void folders(vector<string> &paths);
 extern "C"
 DLL_API void txtFiles(vector<string>& paths);
 
+extern "C"
+DLL_API void tCubic(double F, double x0, double xn, double xl, vector<string>& paths);
 #endif
