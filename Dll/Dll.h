@@ -14,6 +14,8 @@
 #include <sstream>
 #include <algorithm>
 #include <execution>
+#include <iostream>
+#include <iomanip>
 
 using namespace std::chrono;
 extern std::vector<std::ofstream> fileStreams;
@@ -36,7 +38,8 @@ using std::ifstream;
 using std::ofstream;
 using std::cerr;
 using std::istringstream;
-
+using std::fixed;
+using std::setprecision;
 //extern "C"
 //DLL_API void NumberList();
 
@@ -63,4 +66,7 @@ DLL_API void merge(double F, vector<string>& paths);
 
 extern "C"
 DLL_API void deleteFolders(vector<string>& paths);	
+
+extern "C"
+DLL_API void deleteTxtFiles(vector<string>& paths);
 #endif

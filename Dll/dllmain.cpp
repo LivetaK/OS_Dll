@@ -115,7 +115,6 @@ DLL_API void txtFiles(vector<string>& paths) {
 
 
 DLL_API void tCubic(double F, double x0, double xn, double xl, vector<string>& paths) {
-	folders(paths);
     txtFiles(paths);
 
     vector<ofstream> fileStreams;
@@ -134,13 +133,13 @@ DLL_API void tCubic(double F, double x0, double xn, double xl, vector<string>& p
 
         if (funY >= 0) {
             double y = sqrt(funY);
-            fileStreams[currentFile] << "X: " << x << ", Y: " << y << endl;
-            fileStreams[currentFile] << "X: " << x << ", Y: " << -y << endl << endl;
+            fileStreams[currentFile] << fixed << setprecision(6) << "X: " << x << ", Y: " << y << endl;
+            fileStreams[currentFile] << fixed << setprecision(6) << "X: " << x << ", Y: " << -y << endl << endl;
 
             currentFile = (currentFile + 1) % fileStreams.size();
         }
         else {
-            cout << "Bandoma traukti sakni is neigiamo skaiciaus.\n";
+            //cout << "Bandoma traukti sakni is neigiamo skaiciaus.\n";
         }
     }
 
@@ -172,8 +171,6 @@ DLL_API void merge(double F, vector<string>& paths) {
                 
             }
             file.close();
-
-            remove(filePath.c_str());
         }
     }
     std::sort(std::execution::par, allPoints.begin(), allPoints.end(),
@@ -193,5 +190,12 @@ DLL_API void deleteFolders(vector<string>& paths) {
     for (const auto& folderPath : paths) {
         string command = "rmdir /s /q " + folderPath;
         system(command.c_str());
+    }
+}
+
+DLL_API void deleteTxtFiles(vector<string>& paths) {
+    for (const auto& folderPath : paths) {
+        string filePath = folderPath + "\\data.txt";
+        remove(filePath.c_str());
     }
 }
