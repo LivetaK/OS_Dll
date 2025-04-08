@@ -2,43 +2,29 @@
 #include "Dll.h"
 
 
-
-//DLL_API void NumberList()
-//{
-//    TCHAR mod[MAX_PATH];
-//    GetModuleFileName(NULL, mod, MAX_PATH);
-//    wcout << "\nThis function was called from " << (wstring)mod << endl;
-//    cout << "NumberList(): ";
-//    for (int i = 0; i < 10; i++)
-//    {
-//        cout << i << endl;
-//    }
-//    cout << endl << endl;
-//}
-
 DLL_API milliseconds trukmesSkaiciavimas(high_resolution_clock::time_point pradzia, high_resolution_clock::time_point pabaiga) {
     auto trukme = duration_cast<milliseconds>(pabaiga - pradzia);
     return trukme;
 }
 
 DLL_API void controlPanel(int choice) {
-    string powerShellCommand;
+    string command;
 
     switch (choice) {
     case 1: // Display
-        powerShellCommand = "start ms-settings:display";
+        command = "start ms-settings:display";
         break;
     case 2: // Security
-        powerShellCommand = "start windowsdefender:";
+        command = "start windowsdefender:";
         break;
     case 3: // Power
-        powerShellCommand = "start powercfg.cpl";
+        command = "start powercfg.cpl";
         break;
     case 4: // Storage
-        powerShellCommand = "start diskmgmt.msc";
+        command = "start diskmgmt.msc";
         break;
     case 5: // Update
-        powerShellCommand = "start ms-settings:windowsupdate";
+        command = "start ms-settings:windowsupdate";
         break;
 	case 6: // Exit
 		return;
@@ -47,7 +33,7 @@ DLL_API void controlPanel(int choice) {
         return;
     }
 
-    system(powerShellCommand.c_str());
+    system(command.c_str());
 }
 
 DLL_API int controlPanelMenu() {
@@ -103,11 +89,11 @@ DLL_API void txtFiles(vector<string>& paths) {
                 cerr << "Klaida kuriant: " << filePath << endl;
                 continue;
             }
-            cout << "Sukurtas: " << filePath << endl;
+            //cout << "Sukurtas: " << filePath << endl;
         }
         else {
             test.close();
-            cout << "Failas jau egzistuoja: " << filePath << endl;
+            //cout << "Failas jau egzistuoja: " << filePath << endl;
         }
     }
 }
@@ -118,6 +104,9 @@ DLL_API void tCubic(double F, double x0, double xn, double xl, vector<string>& p
     txtFiles(paths);
 
     vector<ofstream> fileStreams;
+
+    vector<std::stringstream> buffers(paths.size());
+
     for (const auto& folderPath : paths) {
         string filePath = folderPath + "\\data.txt";
         fileStreams.emplace_back(filePath, std::ios::app);
@@ -133,8 +122,8 @@ DLL_API void tCubic(double F, double x0, double xn, double xl, vector<string>& p
 
         if (funY >= 0) {
             double y = sqrt(funY);
-            fileStreams[currentFile] << fixed << setprecision(6) << "X: " << x << ", Y: " << y << endl;
-            fileStreams[currentFile] << fixed << setprecision(6) << "X: " << x << ", Y: " << -y << endl << endl;
+            buffers[currentFile] << fixed << setprecision(6) << "X: " << x << ", Y: " << y << endl;
+            buffers[currentFile] << fixed << setprecision(6) << "X: " << x << ", Y: " << -y << endl << endl;
 
             currentFile = (currentFile + 1) % fileStreams.size();
         }
@@ -142,10 +131,11 @@ DLL_API void tCubic(double F, double x0, double xn, double xl, vector<string>& p
             //cout << "Bandoma traukti sakni is neigiamo skaiciaus.\n";
         }
     }
-
-    for (auto& file : fileStreams) {
-        file.close();
+    for (int i = 0; i < fileStreams.size(); ++i) {
+            fileStreams[i] << buffers[i].str();
+            fileStreams[i].close();
     }
+
 }
 
 DLL_API void merge(double F, vector<string>& paths) {
@@ -159,19 +149,13 @@ DLL_API void merge(double F, vector<string>& paths) {
     for (const auto& folderPath : paths) {
         string filePath = folderPath + "\\data.txt";
         ifstream file(filePath);
-
-        if (file.is_open()) {
-            string line;
-            while (getline(file, line)) {
-                    Point point;
-                    char Char;
-                    istringstream iss(line);
-                    iss >> Char >> Char >> point.x >> Char >> Char >> Char >> point.y;
-                    allPoints.push_back(point);
-                
-            }
-            file.close();
+        string line;
+        while (getline(file, line)) {
+            Point point;
+            sscanf_s(line.c_str(), "X: %lf, Y: %lf", &point.x, &point.y);
+            allPoints.push_back(point);
         }
+        file.close();
     }
     std::sort(std::execution::par, allPoints.begin(), allPoints.end(),
         [](const Point& a, const Point& b) { return a.x < b.x; });
@@ -183,14 +167,12 @@ DLL_API void merge(double F, vector<string>& paths) {
         outputFile << "X: " << point.x << ", Y: " << point.y << endl;
     }
 
-    cout << "Sulieti duomenys irasyti i: " << outputFileName << endl;
+   // cout << "Sulieti duomenys irasyti i: " << outputFileName << endl;
 }
 
 DLL_API void deleteFolders(vector<string>& paths) {
-    for (const auto& folderPath : paths) {
-        string command = "rmdir /s /q " + folderPath;
+        string command = "rmdir /s /q " + paths[0];
         system(command.c_str());
-    }
 }
 
 DLL_API void deleteTxtFiles(vector<string>& paths) {

@@ -40,8 +40,7 @@ using std::cerr;
 using std::istringstream;
 using std::fixed;
 using std::setprecision;
-//extern "C"
-//DLL_API void NumberList();
+
 
 extern "C"
 DLL_API milliseconds trukmesSkaiciavimas(high_resolution_clock::time_point pradzia, high_resolution_clock::time_point pabaiga);
