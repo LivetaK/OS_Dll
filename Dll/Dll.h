@@ -18,6 +18,7 @@
 #include <iomanip>
 
 using namespace std::chrono;
+namespace fs = std::filesystem;
 extern std::vector<std::ofstream> fileStreams;
 
 #ifdef DLL_EXPORTS
@@ -40,7 +41,7 @@ using std::cerr;
 using std::istringstream;
 using std::fixed;
 using std::setprecision;
-
+using std::exception;
 
 extern "C"
 DLL_API milliseconds trukmesSkaiciavimas(high_resolution_clock::time_point pradzia, high_resolution_clock::time_point pabaiga);

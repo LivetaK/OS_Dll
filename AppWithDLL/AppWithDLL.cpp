@@ -14,6 +14,7 @@
 #include <iomanip>
 
 using namespace std::chrono;
+namespace fs = std::filesystem;
 extern std::vector<std::ofstream> fileStreams;
 using std::cout;
 using std::endl;
@@ -29,6 +30,8 @@ using std::cerr;
 using std::istringstream;
 using std::fixed;
 using std::setprecision;
+using std::exception;
+
 
 typedef milliseconds(*TRUKMES_SKAICIAVIMAS)(high_resolution_clock::time_point, high_resolution_clock::time_point);
 typedef void (*CONTROL_PANEL)(int);
@@ -67,9 +70,9 @@ int main() {
     int choice;
     do {
         choice = controlPanelMenu();
-        if (choice == 6) break;
         controlPanel(choice);
-    } while (true);
+    } while (choice != 6);
+
     auto pradzia = high_resolution_clock::now();
 	cout << "Vykdomas surasymas i failus \n";
     int proc = 0;

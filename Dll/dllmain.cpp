@@ -45,7 +45,7 @@ DLL_API int controlPanelMenu() {
     cout << "4. Storage\n";
     cout << "5. Update\n";
     cout << "6. Iseiti\n\n";
-    cout << "Jusu pasirinkimas (1-5): ";
+    cout << "Jusu pasirinkimas (1-6): ";
     while (!(cin >> choice) || choice < 1 || choice > 6) {
         cout << "Neteisingas pasirinkimas. Bandykite dar karta." << endl;
         cin.clear();
